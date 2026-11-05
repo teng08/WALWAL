@@ -1,6 +1,6 @@
 # WALWAL — Take the mic.
 
-A responsive browser karaoke app built from scratch for Teng. Pick a song and sing with its embedded karaoke video. No audio uploads, API keys, account, or paid backend required.
+A browser karaoke app for Teng, with a persistent local song library, an original offline sound-check demo, and optional YouTube karaoke. Import permitted media once, then select it from the songbook. No paid backend or API keys required.
 
 ## Run
 
@@ -27,7 +27,7 @@ Microphone audio is not recorded, uploaded, or scored. Browser audio monitoring 
 
 ## Playback and rights
 
-Internet access is required. The app uses YouTube's official iframe API and privacy-enhanced player; videos, audio, and lyrics are not downloaded, extracted, or redistributed. Ads, unavailable videos, regional restrictions, and disabled embedding are controlled by YouTube/creators. Autoplay can require pressing play in the video. Song metadata identifies the original artist, not the performer of the backing track. No claim of independent audio or lyric licensing is made. LRCLIB/standalone lyrics are deliberately not included because these selected videos already provide their own timing and lyrics; separate lyric redistribution permissions have not been established.
+Internet access is required for YouTube songs only. The app uses YouTube's official iframe API and privacy-enhanced player; videos, audio, and lyrics are not downloaded, extracted, or redistributed. Ads, unavailable videos, regional restrictions, and disabled embedding are controlled by YouTube/creators. Autoplay can require pressing play in the video. Song metadata identifies the original artist, not the performer of the backing track. No claim of independent audio or lyric licensing is made. LRCLIB/standalone lyrics are deliberately not included because these selected videos already provide their own timing and lyrics; separate lyric redistribution permissions have not been established.
 
 The initial catalog's public source pages were checked on 2026-11-05. This verifies song/video identity, not playback in every region:
 
@@ -65,3 +65,20 @@ Tests cover catalog integrity, safe video URL parsing, filtering, queue reorderi
 Unit and JavaScript syntax checks pass. Browser checks verified search, favorites, queue reorder, custom link addition, and persistence. Initial Sing King and karaoke SESH candidates disabled embedding during QA and were replaced with Atomic Karaoke sources. The Pantropiko replacement initialized its embedded player and reported duration, but full video streaming stalled in the test browser; end-to-end audio playback and physical microphone input remain unverified. The app exposes a clear error and YouTube fallback when a video cannot play.
 
 The repository uses a flat, buildless layout: serve this folder directly. No dependency installation is required.
+
+
+## Offline mode (v1.1)
+
+Open over HTTPS or localhost once and wait for **App saved for offline use**. The Offline songs tab includes a clearly labeled original 16-second sound-check demo. This is not a recording of any requested commercial song.
+
+Click **Import offline songs** to select files or a folder. MP3, MP4, M4A, WebM, WAV, OGG and FLAC are accepted; actual codec support depends on the browser. Use `Artist - Title.mp3` names for automatic labels. Pair audio with a same-name `.lrc` file in the same folder for line-synchronized lyrics. Karaoke videos can carry their own lyrics. Import files and lyrics you have permission to use. Audio separation is not built into this release.
+
+Songs are copied to IndexedDB on this device, not uploaded. They survive page reloads and are available to the same browser/site. Keep originals: clearing site data or browser storage eviction removes these copies. A 256 MB limit applies to each song. Failed imports and duplicates are reported individually; successfully imported songs remain saved after partial failures. Files with the same name, size and matching first/last 64 KB are treated as duplicates.
+
+Playback, pause, seeking, restart, volume, queues, favorites and history support local songs. A remove button deletes only WALWAL's saved copy and references, leaving the original untouched. Browser-data reset in Help resets preferences and online links; it does not delete imported media. The separate remove control handles media deletion.
+
+The service worker caches only the app shell and original demo code. It does not download YouTube videos. Fonts use local system fallbacks so offline layout does not depend on Google Fonts. Hosted sign-in/access gates may impose additional offline limitations: the standalone package served on localhost is the most reliable setup. Test with Wi-Fi off before traveling.
+
+Run `python3 -m http.server 8000` from this directory on a laptop. The local server needs to keep running; it does not need internet. Keep using `http://localhost:8000` because browser storage belongs to the exact origin. Service workers require HTTPS or localhost.
+
+Offline validation: nine Node tests and syntax checks pass. Browser QA verified the demo playing for 16 seconds, importing WAV + LRC, imported-song playback, persistence after reload, and queue playback. Service-worker offline reload could not be tested on the HTTP preview origin, which is not a secure context; test on HTTPS or localhost before relying on it.

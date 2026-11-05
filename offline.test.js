@@ -1,0 +1,8 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {parseLrc,activeLine,metadata,fileStem,supportedFile,fileIdentity} from './offline.js';
+import {demoMedia} from './demo.js';
+test('LRC supports multiple timestamps, offsets, empty lines and fractional seconds',()=>{const lines=parseLrc('[ar:Test]\n[offset:-500]\n[00:01.25][01:02.5]Hello\n[00:03.00]\ninvalid');assert.deepEqual(lines,[{time:.75,text:'Hello'},{time:2.5,text:''},{time:62,text:'Hello'}]);assert.equal(activeLine(lines,.5),-1);assert.equal(activeLine(lines,.75),0);assert.equal(activeLine(lines,50),1);assert.equal(activeLine([],10),-1);});
+test('safe metadata inference keeps text literal and separates artist/title',()=>{assert.deepEqual(metadata('Ben&Ben - Song title.mp4'),{artist:'Ben&Ben',title:'Song title'});assert.deepEqual(metadata('<b>Track</b>.mp3'),{artist:'Local library',title:'<b>Track</b>'});assert.equal(fileStem('Track.LRC'),'track');assert.ok(supportedFile({name:'Song.MP3'}));assert.equal(supportedFile({name:'Song.exe'}),false);});
+test('file IDs deduplicate identical media but distinguish other files',async()=>{const a=new File(['audio'],'Artist - Track.mp3'),b=new File(['audio'],'Artist - Track.mp3'),c=new File(['other'],'Artist - Track.mp3');assert.equal(await fileIdentity(a),await fileIdentity(b));assert.notEqual(await fileIdentity(a),await fileIdentity(c));});
+test('original offline demo produces a valid 16 second WAV and timed lyrics',async()=>{const {blob,lrc}=demoMedia();const v=new DataView(await blob.arrayBuffer());assert.equal(blob.type,'audio/wav');assert.equal(v.getUint32(24,true),22050);assert.equal(v.getUint32(40,true),16*22050*2);assert.equal(blob.size,44+16*22050*2);assert.equal(parseLrc(lrc).length,6);});

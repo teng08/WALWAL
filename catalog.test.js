@@ -6,3 +6,4 @@ test('YouTube URL parser accepts supported URLs and rejects untrusted hosts',()=
 test('search filters titles and artists case insensitively, respecting categories',()=>{assert.ok(matches(songs[0],' BINI ','OPM'));assert.ok(matches(songs[0],'pantropiko','All songs'));assert.equal(matches(songs[0],'pantropiko','English'),false);assert.equal(matches(songs[0],'Adele','All songs'),false);});
 test('queue reordering handles duplicates and boundaries without mutation',()=>{const a=['a','b','a'];assert.deepEqual(moveItem(a,1,-1),['b','a','a']);assert.deepEqual(a,['a','b','a']);assert.deepEqual(moveItem(a,0,-1),a);assert.deepEqual(moveItem(a,3,-1),a);assert.deepEqual(moveItem(a,1,1),['a','a','b']);});
 test('time formatting handles non-finite and negative inputs',()=>{assert.equal(formatTime(125.5),'2:05');assert.equal(formatTime(-10),'0:00');assert.equal(formatTime(NaN),'0:00');});
+

@@ -129,3 +129,4 @@ export function videoId(input) {
 export function matches(song,query,category) {return (category==='All songs'||song.category===category)&&`${song.title} ${song.artist} ${song.mood}`.toLowerCase().includes(query.trim().toLowerCase());}
 export function moveItem(items,index,direction) {const target=index+direction; if(index<0||index>=items.length||target<0||target>=items.length)return [...items]; const copy=[...items]; [copy[index],copy[target]]=[copy[target],copy[index]];return copy;}
 export function formatTime(seconds) {const t=Math.max(0,Math.floor(Number.isFinite(Number(seconds))?Number(seconds):0)); return `${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;}
+

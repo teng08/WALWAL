@@ -1,10 +1,10 @@
 {
   "name": "walwal-karaoke",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test catalog.test.js",
-    "check": "node --check app.js && node --check catalog.js"
+    "test": "node --test catalog.test.js offline.test.js",
+    "check": "node --check app.js && node --check catalog.js && node --check offline.js && node --check demo.js && node --check sw.js"
   }
 }
